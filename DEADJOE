@@ -1,0 +1,17 @@
+
+*** These modified files were found in JOE when it aborted on Wed May 20 07:58:38 2020
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+/home/debian/galaxy/tools/mytools/docker/utils/chem_indentifier_converter/chem_identifier_converter/.git/COMMIT_EDITMSG
+/home/debian/galaxy/tools/mytools/docker/utils/chem_indentifier_converter/chem_identifier_converter/.git/COMMIT_EDITMSG
+/home/debian/galaxy/tools/mytools/docker/utils/chem_indentifier_converter/chem_identifier_converter/.git/COMMIT_EDITMSG
+/home/debian/galaxy/tools/mytools/docker/utils/chem_indentifier_converter/chem_identifier_converter/.git/COMMIT_EDITMSG
+/home/debian/galaxy/tools/mytools/docker/utils/chem_indentifier_converter/chem_identifier_converter/.git/COMMIT_EDITMSG
+/home/debian/galaxy/tools/mytools/docker/utils/chem_indentifier_converter/chem_identifier_converter/.git/COMMIT_EDITMSG
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc

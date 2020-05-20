@@ -1,0 +1,12 @@
+# .shed.yml supporting automatic pushes.
+owner: galaxy_user
+categories:
+  - Recetox
+repositories:
+  biotransformer:
+    description: "Convertor for different chemical identifiers."
+    include:
+      - chem_identifier_converterDocker.xml
+toolshed:
+  - localhost:9009
+

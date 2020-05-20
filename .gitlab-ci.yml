@@ -1,0 +1,42 @@
+stages:
+  - build
+  - deploy
+
+#Do not change image key. This is used for pipeline tools deployment. This is not your galaxy tool container.
+image: registry.gitlab.ics.muni.cz:443/recetox/mass-spectrometry/galaxy-workflows/ubuntu:0.0.0
+
+services:
+  - docker:19.03.1-dind
+
+building_images:
+  stage: build
+  image: docker:19.03.1
+  services:
+    - docker:19.03.1-dind
+  before_script:
+    - echo ${CI_REGISTRY_PASSWORD} | docker login ${CI_REGISTRY} -u ${CI_REGISTRY_USER} --password-stdin
+  script:
+    - docker build -t ${CI_REGISTRY}/${GROUP_NAME}/${CI_PROJECT_NAME}:${CI_COMMIT_REF_NAME} .
+    - docker push ${CI_REGISTRY}/${GROUP_NAME}/${CI_PROJECT_NAME}:${CI_COMMIT_REF_NAME}
+  only:
+    - pipelines
+
+deploying_tools:
+  stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  script:
+    - sed -i "s,localhost:9009,$TOOLSHED_URL,g" galaxy/.shed.yml
+    - cat galaxy/.shed.yml
+    - sh /root/pipeline_helper_tools/add_tools_to_tool_shed.sh ${TOOLSHED_URL} ${TOOLSHED_API_KEY}
+    - ls -la
+    - sed -i "s,http://127.0.0.1:8080/,${GALAXY_URL}/,g" /root/galaxy-tools-playbook/tools.yml
+    - python /root/pipeline_helper_tools/install_tool_to_galaxy.py ${TOOLSHED_URL} ${TOOLSHED_API_KEY} ${GALAXY_URL} ${GALAXY_API_KEY} ${TOOL_VISIBILITY}
+  only:
+    - pipelines
+
