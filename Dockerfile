@@ -12,6 +12,8 @@ RUN R -e "install.packages('httr')"
 RUN R -e "install.packages('rvest')"
 RUN R -e "install.packages('RCurl')"
 RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/webchem/webchem_0.2.tar.gz', repos=NULL, type='source')"
+RUN R -e "install.packages('RJSONIO')"
+RUN R -e "install.packages('XML')"
 
 WORKDIR /chem_identifier_converter
 COPY chem_identifier_converter.r /chem_identifier_converter
