@@ -3,7 +3,7 @@ owner: recetox
 categories:
   - MS-utils
 repositories:
-  biotransformer:
+  chem_identifier_converter:
     description: "Convertor for different chemical identifiers."
     include:
       - chem_identifier_converterDocker.xml
