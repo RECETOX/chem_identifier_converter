@@ -1,6 +1,6 @@
-<tool id="chem" name="Chemical Identifier Converter" version="1.0.1">
+<tool id="chem" name="Chemical Identifier Converter" version="{{tool_version}}">
   <requirements>
-    <container type="docker">registry.gitlab.ics.muni.cz:443/recetox/mass-spectrometry/chem_identifier_converter:1.0.2</container>
+    <container type="docker">{{container_registry}}:{{tool_version}}</container>
   </requirements>
   <stdio>
     <exit_code range="1:" />

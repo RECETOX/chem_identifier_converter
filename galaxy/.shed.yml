@@ -1,7 +1,7 @@
 # .shed.yml supporting automatic pushes.
-owner: galaxy_user
+owner: recetox
 categories:
-  - Recetox
+  - MS-utils
 repositories:
   biotransformer:
     description: "Convertor for different chemical identifiers."
