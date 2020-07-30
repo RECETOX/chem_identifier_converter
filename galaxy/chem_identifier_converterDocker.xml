@@ -1,6 +1,6 @@
 <tool id="chem" name="Chemical Identifier Converter" version="{{tool_version}}">
   <requirements>
-    <container type="docker">{{container_registry}}:{{tool_version}}</container>
+    <container type="docker">https://gitlab.ics.muni.cz/recetox/mass-spectrometry/chem_identifier_converter</container>
   </requirements>
   <stdio>
     <exit_code range="1:" />
@@ -14,7 +14,7 @@
     <param name="input" type="data" label="CSV file with input."/>
   </inputs>
   <outputs>
-    <data format="csv" name="output" type="data" label="CSV file with output."/>
+    <data format="csv" name="output" label="CSV file with output."/>
   </outputs>
   <help>
 This is a utility for chemical identifier conversion (version 1.0.0). User can input file with different chemical identifiers (common/preffered name, IUPAC name, InChIKey, SMILES) in a CSV format (one identifier per line, no header) and will get file with all remaining identifiers. Currently, only the beforementioned 4 chemical identifiers are allowed as an input. 
