@@ -41,18 +41,25 @@ getName <- function(table, my_inchikey){
 
 # Extract common/preferred name from NIH
 getName2 <- function(inchikey){
-  qurl <- paste0("https://chem.nlm.nih.gov/chemidplus/inchikey/",inchikey,"?DT_START_ROW=0&DT_ROWS_PER_PAGE=50",sep="")
-  ttt <- read_html(qurl)
-  txt <- xml_text(ttt)
-  name <- as.vector(str_match(txt, "Substance Name:(.*?)RN:"))[2]
-  name <- sub("\\[.*", "", name)
-  return(substring(name,2))
+  tryCatch({
+    qurl <- paste0("https://chem.nlm.nih.gov/chemidplus/inchikey/",inchikey,"?DT_START_ROW=0&DT_ROWS_PER_PAGE=50",sep="")
+    Sys.sleep(runif(1, 3.0, 6.0))
+    ttt <- read_html(qurl)
+    txt <- xml_text(ttt)
+    name <- as.vector(str_match(txt, "Substance Name:(.*?)RN:"))[2]
+    name <- sub("\\[.*", "", name)
+    return(substring(name,2))
+  }, error=function(e){
+    print("Chemical name for this compound could not be retrieved due to connection error -> database could not be reached...")
+    return("NA")
+  })
 }
 
 # Extract common/preferred name from NIST
 getName3 <- function(table, inchikey){
   cas <- table[[inchikey]]$externalIds[table[[inchikey]]$externalIds$name=="CAS",]$value
   qurl <- paste0("https://webbook.nist.gov/cgi/cbook.cgi?ID=",cas[1],sep="")
+  Sys.sleep(runif(1, 3.0, 6.0))
   ttt <- read_html(qurl)
   txt <- xml_text(ttt)
   name <- sub("\\\n.*", "", txt)
@@ -86,15 +93,18 @@ getSmiles <- function(inchi){
 nameToInchikey1 <- function(name){
   qurl <- paste0("https://chem.nlm.nih.gov/chemidplus/name/",name,sep="")
   qurl <- URLencode(qurl)
+  Sys.sleep(runif(1, 3.0, 6.0))
   ttt <- try(read_html(qurl), silent=T)
   if(class(ttt) == "try-error"){
     return(nameToInchikey2(name))
   } else {
   txt <- xml_text(ttt)
   inchikey <- as.vector(str_match(txt, "inchikey='(.*?)',"))[2]
-  if(is.na(inchikey) | inchikey=="null"){
+  if(is.na(inchikey) | inchikey=="null" | identical(inchikey, character(0))){
+    message(paste("1"))
     return(nameToInchikey2(name))
   } else {
+  message(paste("2"))
   return(inchikey)
   }
   }
@@ -118,8 +128,7 @@ inpSmiles <- function(item){
   inchi <- cs_smiles_inchi(item, verbose=F)
   inchikey <- c()
   inchikey <- cs_inchi_inchikey(inchi, verbose = F)
-  Sys.sleep(sample(3:10, 1)*1)
-  
+
   tmp <- cts_compinfo(inchikey, verbose = F)
   
   if(is.na(tmp[1])){
@@ -127,16 +136,13 @@ inpSmiles <- function(item){
     inpChemName(item) }
   else  {
     print("Extracting name from NIH...")
-    Sys.sleep(sample(3:10, 1)*1)
     name <- getName2(inchikey)
     if(is.na(name)){
       print("Extracting name from NIH failed, trying CTS...")
-      Sys.sleep(sample(3:10, 1)*1)
       name <- getName(tmp,inchikey)[1]
     }
     if(is.na(name)){
       print("Extracting name from CTS failed, trying NIST...")
-      Sys.sleep(sample(3:10, 1)*1)
       name <- getName3(tmp,inchikey)
     }
     
@@ -154,8 +160,7 @@ inpSmiles <- function(item){
 inpInchikey <- function(item){
   inchi <- c()
   inchi <- cs_inchikey_inchi(item, verbose = F)
-  Sys.sleep(sample(3:10, 1)*1)
-  
+
   tmp <- cts_compinfo(item, verbose = F)
   
   if (is.na(tmp[[item]])){
@@ -166,17 +171,14 @@ inpInchikey <- function(item){
     iupacFull <<- c(iupacFull, "NA")
   } else {
   print("Extracting name from NIH...")
-  Sys.sleep(sample(3:10, 1)*1)
   name <- getName2(item)
 
   if(is.na(name)){
     print("Extracting name from NIH failed, trying CTS...")
-    Sys.sleep(sample(3:10, 1)*1)
     name <- getName(tmp,item)[1]
   }
   if(is.na(name)){
     print("Extracting name from CTS failed, trying NIST...")
-    Sys.sleep(sample(3:10, 1)*1)
     name <- getName3(tmp,item)
   }
   
@@ -197,24 +199,25 @@ inpChemName <- function(item){
     print("There is banned character present in the string so I am removing it...")
     item <- gsub('\"',"",item)
   }
-  Sys.sleep(sample(3:10, 1)*1)
   inchikey <- c()
   inchikey <- nameToInchikey1(item)
-  inchikey
+
+  if(identical(inchikey,character(0))){
+    inchikey<-NA
+  }
+
   if(is.na(inchikey)){
     print(paste0("Chemical name ",item," is not correct OR was not found in any database.",sep=""))
-    inchikeyFull <- c(inchikeyFull, "NA")
-    namesFull <- c(namesFull, item)
-    iupacFull <- c(iupacFull, "NA")
-    smilesCanFull <- c(smilesCanFull, "NA")
-    smilesFull <- c(smilesFull,"NA")
+    inchikeyFull <<- c(inchikeyFull, "NA")
+    namesFull <<- c(namesFull, item)
+    iupacFull <<- c(iupacFull, "NA")
+    smilesCanFull <<- c(smilesCanFull, "NA")
+    smilesFull <<- c(smilesFull,"NA")
   } else {
     tmp <- cts_compinfo(inchikey = inchikey, verbose = F)
     
     print("Extracting name from NIH...")
-    Sys.sleep(sample(3:10, 1)*1)
     name <- getName2(inchikey)
-    Sys.sleep(sample(3:10, 1)*1)
     if(is.na(name)){
       print("Extracting name from NIH failed, trying CTS...")
       name <- getName(tmp,inchikey)[1]

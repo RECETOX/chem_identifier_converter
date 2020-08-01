@@ -17,7 +17,7 @@
     <data format="csv" name="output" label="CSV file with output."/>
   </outputs>
   <help>
-This is a utility for chemical identifier conversion (version 1.0.0). User can input file with different chemical identifiers (common/preffered name, IUPAC name, InChIKey, SMILES) in a CSV format (one identifier per line, no header) and will get file with all remaining identifiers. Currently, only the beforementioned 4 chemical identifiers are allowed as an input. 
+This is a utility for chemical identifier conversion (version 1.0.2). User can input file with different chemical identifiers (common/preffered name, IUPAC name, InChIKey, SMILES) in a CSV format (one identifier per line, no header) and will get file with all remaining identifiers. Currently, only the beforementioned 4 chemical identifiers are allowed as an input. 
 
 Author of the Galaxy tool: Karolína Trachtová (k.trachtova@gmail.com)
 
