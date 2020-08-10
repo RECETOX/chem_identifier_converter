@@ -13,6 +13,7 @@ stages:
 
 variables:
   TOOL_PANEL_SECTION_LABEL: "Public"
+  DOCKER_REBUILD: true
 
 # Docker build and release
 docker-build-test:
