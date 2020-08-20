@@ -1,7 +1,7 @@
 # .shed.yml supporting automatic pushes.
 owner: recetox
 categories:
-  - MS-utils
+  - ZZ-test2
 repositories:
   chem_identifier_converter:
     description: "Convertor for different chemical identifiers."
